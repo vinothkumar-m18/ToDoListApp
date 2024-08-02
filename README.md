@@ -1,18 +1,50 @@
+# Task Management Application
+
+## Overview
+A simple command-line task management application that allows users to add, complete, delete, view, search, and undo tasks.
+
+## Features
+- Add new tasks
+- Mark tasks as complete
+- Delete individual tasks or all tasks
+- View all tasks, completed tasks, or incomplete tasks
+- Search for a task
+- Undo the last operation
+- Save tasks to a file
+
 ## Getting Started
+### Prerequisites
+- Java Development Kit (JDK) installed
+- A code editor or IDE (like IntelliJ IDEA, Eclipse, or VS Code)
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+### Installation
+1. Clone the repository:
+    ```sh
+    git clone https://github.com/vinothkumar-m18/ToDoListApp.git
+    ```
+2. Navigate to the project directory:
+    ```sh
+    cd ToDoList
+    ```
+3. Compile the Java files:
+    ```sh
+    javac src/*.java
+    ```
+4. Run the application:
+    ```sh
+    java src.UserInput
+    ```
 
-## Folder Structure
+## Usage
+- Follow the on-screen menu to perform various task management operations.
+- To exit the application, choose the 'Exit' option from the main menu.
 
-The workspace contains two folders by default, where:
+## Contributing
+- Fork the repository
+- Create a new branch (`git checkout -b feature/your-feature`)
+- Commit your changes (`git commit -m 'Add some feature'`)
+- Push to the branch (`git push origin feature/your-feature`)
+- Open a pull request
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
-
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
-
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
-
-## Dependency Management
-
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
