@@ -32,7 +32,7 @@ A simple command-line task management application that allows users to add, comp
     ```
 4. Run the application:
     ```sh
-    java src.UserInput
+    java src.TaskManager
     ```
 
 ## Usage
