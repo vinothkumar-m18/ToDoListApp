@@ -16,7 +16,7 @@ public class FileManager {
 
   public void setResources(ArrayList<Task> taskList){
     this.taskList = taskList;
-    this.file = new File("MyTasks.txt");
+    this.file = new File("src/MyTasks.txt");
   }
 
   /**
@@ -25,6 +25,9 @@ public class FileManager {
   public void readTasksFromDisk() {
     if (!file.exists()) {
       System.out.println("file doesnt exists");
+      System.out.println("Please add a text file named \"MyTasks.txt\" inside the src folder");
+      System.out.println("Exited the application");
+      System.exit(1);
     }
     String str;
     try (BufferedReader br = new BufferedReader(new FileReader(file))) {
@@ -41,16 +44,24 @@ public class FileManager {
       }
     } catch (IOException e) {
       System.err.println("Error reading tasks from disk " + e);
+      System.out.println("Exited the application");
+      System.exit(1);
     }
   }
+
+  /**
+   * Writes all the tasks in the tasklist to the disk
+   */
   public void writeTasksToDisk() {
-    try (BufferedWriter bw = new BufferedWriter(new FileWriter("MyTasks.txt", false))) {
+    try (BufferedWriter bw = new BufferedWriter(new FileWriter(file, false))) {
       for (Task task : taskList) {
         bw.write(task.getDescription() + "|" + task.getStatus());
         bw.newLine();
       }
     } catch (IOException e) {
       System.err.println("Error writing tasks to disk " + e);
+      System.out.println("Exited the application");
+      System.exit(0);
     }
   }
 
