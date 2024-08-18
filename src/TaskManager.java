@@ -1,17 +1,5 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Stack;
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.Properties;
 import java.util.Scanner;
 
 /**
@@ -20,87 +8,26 @@ import java.util.Scanner;
 public class TaskManager {
 
   private ArrayList<Task> taskList; // Stores all the task objects
-  private File file; // File object for performing file operations
-  private String filePath; // Stores the absolute path of the text file
-  private Stack<TaskSnapshot> history; // Stack to store the states of all the task objects in the arraylsit for undo functionality
-  private Properties properties; // Properties object to manage the configuration properties
+  private Stack<TaskSnapshot> history; // Stack to store the states of all the task objects in the arraylsit for undo
+                                       // functionality
+  private FileManager fileManager;
+  UserInput userInput;
+  Scanner scanner;
 
   /**
-   * Constructs a TaskManager instance, initializes necessary components, and read
-   * tasks from disk if the file exists
+   * Constructs the Taskmanager and FileManager instance, and reads all tasks from
+   * the disk when the system starts.
    */
   TaskManager() {
-    taskList = new ArrayList<>();
-    history = new Stack<>();
-    filePath = getFilePathFromConfig();
-    file = new File(filePath);
-    if (!file.exists()) {
-      try {
-        if (file.createNewFile()) {
-          System.out.println("file created");
-        }
-      } catch (IOException e) {
-        System.err.println("Enter a valid file path " + e);
-      }
-    }
-    readTasksFromDisk();
-  }
-
-  /**
-   * Gets the file path from the configuration file if it exists, otherwise it
-   * prompts the user to input the file path
-   * 
-   * @return the file path
-   */
-  private String getFilePathFromConfig() {
-    File configFile = new File("config.properties");
-    properties = new Properties();
-    if (configFile.exists()) {
-      try (InputStream input = new FileInputStream(configFile)) {
-        properties.load(input);
-      } catch (FileNotFoundException e) {
-        System.err.println("Error finding the file");
-      } catch (IOException e) {
-        System.err.println("Error reading the input stream " + e);
-      }
-    }
-    String path = properties.getProperty("filePath");
-    if ((path != null) && (!path.isEmpty())) {
-      return path;
-    }
-    return getUserInputFilePath();
-  }
-
-  /**
-   * Prompts the user to input the file path for storing tasks
-   * 
-   * @return the user provided file path
-   */
-  private String getUserInputFilePath() {
-    Scanner input = new Scanner(System.in);
-    System.out.println("Welcome to my todo list application !!");
-    System.out.println("Enter the file path(String format) in which you want to store your tasks");
-    String path = input.nextLine();
-    path = path + "\\MyTasks.txt";
-    saveFilePathToConfig(path);
-    return path;
-  }
-
-  /**
-   * Saves the given file path to the configuration file
-   * 
-   * @param path the file path to save
-   */
-  private void saveFilePathToConfig(String filePath) {
-    properties = new Properties();
-    properties.setProperty("filePath", filePath);
-    try (OutputStream output = new FileOutputStream("config.properties")) {
-      properties.store(output, null);
-    } catch (FileNotFoundException e) {
-      System.err.println("Error finding the config file " + e);
-    } catch (IOException e) {
-      System.err.println("Error writing to the config file" + e);
-    }
+    this.history = new Stack<>();
+    this.taskList = new ArrayList<>();
+    userInput = new UserInput();
+    fileManager = new FileManager();
+    scanner = new Scanner(System.in);
+    fileManager.setResources(taskList);
+    userInput.setResources(this, fileManager);
+    fileManager.readTasksFromDisk();
+    userInput.start();
   }
 
   private Task findTask(String description) {
@@ -160,17 +87,21 @@ public class TaskManager {
   }
 
   /**
-   * Deletes all tasksand takes a snapshot of the current state for undo
+   * Deletes all tasks and takes a snapshot of the current state for undo
    * functionality
    */
   public void deleteAllTasks() {
-    takeSnapShot();
-    taskList.clear();
-    System.out.println("All tasks deleted");
+    if(!taskList.isEmpty()){
+      takeSnapShot();
+      taskList.clear();
+      System.out.println("All tasks deleted");
+    }else{
+      System.out.println("No tasks available");
+    }
   }
 
   /**
-   * Returns the total count of all available tasks
+   * Returns the total count of all tasks
    * 
    * @return the number of tasks
    */
@@ -236,45 +167,6 @@ public class TaskManager {
   }
 
   /**
-   * Writes all tasks to the disk
-   */
-  public void writeTasksToDisk() {
-    try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath, false))) {
-      for (Task task : taskList) {
-        bw.write(task.getDescription() + "," + task.getStatus());
-        bw.newLine();
-      }
-    } catch (IOException e) {
-      System.err.println("Error writing tasks to disk " + e);
-    }
-  }
-
-  /**
-   * Reads all tasks from the disk and stores them in the task list
-   */
-  public void readTasksFromDisk() {
-    if (!file.exists()) {
-      System.out.println("file doesnt exists");
-    }
-    String str;
-    try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-      while ((str = br.readLine()) != null) {
-        String[] parts = str.split(",");
-        Task task;
-        if (parts.length == 2) {
-          task = new Task(parts[0]);
-          if (("COMPLETED").equals(parts[1])) {
-            task.markComplete();
-          }
-          taskList.add(task);
-        }
-      }
-    } catch (IOException e) {
-      System.err.println("Error reading tasks from disk " + e);
-    }
-  }
-
-  /**
    * Takes a snapshot of the current state for undo functionality
    */
   public void takeSnapShot() {
@@ -293,5 +185,8 @@ public class TaskManager {
       System.out.println("no operations to undo");
     }
   }
-
+  public static void main(String[] args) {
+    TaskManager taskManager = new TaskManager();
+    
+  }
 }

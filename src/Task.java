@@ -44,6 +44,6 @@ public class Task {
      * Returns the task description and status in a readable format
      */
     public String toString(){
-        return "{description = '" + taskDescription + "', Status = '" + getStatus() + "'}";
+        return "\n{description = '" + taskDescription + "', Status = '" + getStatus() + "'}";
     }
 }
